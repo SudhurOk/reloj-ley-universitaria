@@ -352,33 +352,6 @@
                 setTimeout(() => statusText.classList.add('hidden'), 2000);
             }
         }
-        
-        window.addEventListener('load', () => {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('widget') !== 'true') {
-                const modalHTML = `
-                <div id="marcha-pop" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                    <div class="relative w-full max-w-lg overflow-hidden"> 
-                        <iframe 
-                            src="marcha.html" 
-                            id="iframe-marcha"
-                            width="100%" 
-                            height="530" 
-                            frameborder="0" 
-                            style="border:none; overflow:hidden; display:block; border-radius: 2rem;">
-                        </iframe>
-                    </div>
-                </div>`;
-                document.body.insertAdjacentHTML('beforeend', modalHTML);
-            }
-        });
-
-        window.addEventListener('message', (event) => {
-            if (event.data === 'cerrar-modal') {
-                const modal = document.getElementById('marcha-pop');
-                if (modal) modal.remove();
-            }
-        });
     </script>
 </body>
 
