@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página con Pop-up de Reloj</title>
+
+    <style>
+        /* boton para abrir el reloj */
+        .btn-abrir-reloj {
+            padding: 12px 24px;
+            background-color: #1e293b;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-abrir-reloj:hover {
+            background-color: #334155;
+        }
+
+        /* fondo oscuro del pop-up */
+        .modal-fondo {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.8);
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        /* CONTENEDOR DEL MODAL */
+        /* Celular (Formato vertical largo) */
+        .modal-contenido {
+            position: relative;
+            width: 100%;
+            max-width: 310px;
+            margin: 10px;
+            padding: 0;
+        }
+
+        .reloj-embed {
+            width: 100%;
+            height: 570px; /* Alto para ver las 4 tarjetas verticales en celular */
+            background: transparent; 
+            overflow: hidden; 
+            display: block;
+        }
+
+        /* Botón de cerrar (X) */
+        .btn-cerrar-reloj {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 30px;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 50;
+            transition: color 0.2s;
+        }
+
+        .btn-cerrar-reloj:hover {
+            color: #f1f5f9;
+        }
+
+        /* RESOLUCIÓN PARA COMPUTADORA */
+        @media (min-width: 680px) {
+            .modal-contenido {
+                max-width: 680px; 
+                min-width: 640px;
+            }
+            .reloj-embed {
+                height: 380px; 
+            }
+            .btn-cerrar-reloj {
+                top: 15px;
+                right: 25px;
+            }
+        }
+    </style>
+</head>
+<body style="font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8fafc; margin: 0;">
+
+    <button id="openClockBtn" class="btn-abrir-reloj">
+        Ver Contador de Incumplimiento
+    </button>
+
+    <div id="clockModal" class="modal-fondo">
+        <div class="modal-contenido">
+            <button id="closeClockBtn" class="btn-cerrar-reloj">&times;</button>
+            <iframe 
+                src="https://sudhurok.github.io/reloj-ley-universitaria/reloj.html" 
+                class="reloj-embed" 
+                frameborder="0" 
+                scrolling="no">
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("clockModal");
+        const openBtn = document.getElementById("openClockBtn");
+        const closeBtn = document.getElementById("closeClockBtn");
+
+        openBtn.onclick = function() {
+            modal.style.display = "flex";
+        }
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
