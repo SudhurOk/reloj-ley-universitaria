@@ -32,27 +32,22 @@
             <h2 class="text-base sm:text-lg font-bold text-white mb-5 px-1">La Ley de Financiamiento Universitario lleva sancionada</h2>
             
             <div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
-                
                 <div class="flex flex-col items-center flex-1 sm:max-w-[110px]">
                     <div class="bg-slate-800 text-blue-400 font-mono text-4xl sm:text-4xl md:text-5xl font-bold px-2 py-2 sm:py-3 rounded-xl shadow-inner w-full text-center" id="dias">00</div>
                     <span class="text-slate-400 mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Días</span>
                 </div>
-                
                 <div class="flex flex-col items-center flex-1 sm:max-w-[110px]">
                     <div class="bg-slate-800 text-white font-mono text-4xl sm:text-4xl md:text-5xl font-bold px-2 py-2 sm:py-3 rounded-xl shadow-inner w-full text-center" id="horas">00</div>
                     <span class="text-slate-400 mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Horas</span>
                 </div>
-                
                 <div class="flex flex-col items-center flex-1 sm:max-w-[110px]">
                     <div class="bg-slate-800 text-white font-mono text-4xl sm:text-4xl md:text-5xl font-bold px-2 py-2 sm:py-3 rounded-xl shadow-inner w-full text-center" id="minutos">00</div>
                     <span class="text-slate-400 mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Minutos</span>
                 </div>
-                
                 <div class="flex flex-col items-center flex-1 sm:max-w-[110px]">
                     <div class="bg-slate-800 text-blue-500/90 font-mono text-4xl sm:text-4xl md:text-5xl font-bold px-2 py-2 sm:py-3 rounded-xl shadow-inner w-full text-center" id="segundos">00</div>
                     <span class="text-slate-400 mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Segundos</span>
                 </div>
-                
             </div>
             
             <div id="alert-container" class="mt-4 empty:hidden"></div>
@@ -68,8 +63,6 @@
 
     <script>
         lucide.createIcons();
-
-        // Fecha de inicio: 21 de Octubre 2025
         const startDate = new Date('2025-10-21T00:00:00-03:00');
 
         function updateCounter() {
@@ -94,7 +87,6 @@
             if (days >= 200) {
                 diasElement.classList.remove('text-blue-400');
                 diasElement.classList.add('text-red-500', 'animate-pulse'); 
-
                 if (alertContainer && alertContainer.innerHTML === "") {
                     alertContainer.innerHTML = `
                         <div class="bg-red-950/40 border border-red-800 text-red-400 rounded-xl py-1.5 px-3 text-[11px] font-bold uppercase tracking-tight animate-pulse flex items-center justify-center gap-1 w-full max-w-[240px] sm:max-w-none mx-auto">
@@ -110,7 +102,6 @@
                 if (alertContainer) alertContainer.innerHTML = "";
             }
         }
-        
         setInterval(updateCounter, 1000);
         updateCounter();
     </script>
