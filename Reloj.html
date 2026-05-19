@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reloj - SUDHUR</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;600;800&family=JetBrains+Mono:wght=700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .counter-box { animation: pulse-border 3s infinite; }
+    </style>
+</head>
+<body class="bg-transparent antialiased m-0 p-0 flex justify-center items-start overflow-hidden">
+
+    <div id="capture-zone" class="bg-slate-900 rounded-2xl p-5 sm:p-6 shadow-2xl relative border border-slate-700 w-full max-w-[290px] sm:max-w-2xl counter-box my-2 mx-2 overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-blue-600 opacity-20 blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-blue-600 opacity-20 blur-3xl"></div>
+        
+        <div class="relative z-10 text-center">
+            <p class="text-blue-300 font-semibold mb-1 uppercase tracking-widest text-[10px] sm:text-xs">Contador del incumplimiento</p>
+            <h2 class="text-base sm:text-lg font-bold text-white mb-5 px-1">La Ley de Financiamiento Universitario lleva sancionada</h2>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+                
+                <div class="flex flex-col items-center flex-1 sm:max-w-[110px]">
+                    <div class="bg-slate-800 text-blue-400 font-mono text-4xl sm:text-4xl md:text-5xl font-bold px-2 py-2 sm:py-3 rounded-xl shadow-inner w-full text-center" id="dias">00</div>
+                    <span class="text-slate-400 mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Días</span>
+                </div>
+                
+                <div class="flex flex-col items-center flex-1 sm:max-w-[110px]">
+                    <div class="bg-slate-800 text-white font-mono text-4xl sm:text-4xl md:text-5xl font-bold px-2 py-2 sm:py-3 rounded-xl shadow-inner w-full text-center" id="horas">00</div>
+                    <span class="text-slate-400 mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Horas</span>
+                </div>
+                
+                <div class="flex flex-col items-center flex-1 sm:max-w-[110px]">
+                    <div class="bg-slate-800 text-white font-mono text-4xl sm:text-4xl md:text-5xl font-bold px-2 py-2 sm:py-3 rounded-xl shadow-inner w-full text-center" id="minutos">00</div>
+                    <span class="text-slate-400 mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Minutos</span>
+                </div>
+                
+                <div class="flex flex-col items-center flex-1 sm:max-w-[110px]">
+                    <div class="bg-slate-800 text-blue-500/90 font-mono text-4xl sm:text-4xl md:text-5xl font-bold px-2 py-2 sm:py-3 rounded-xl shadow-inner w-full text-center" id="segundos">00</div>
+                    <span class="text-slate-400 mt-1 sm:mt-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Segundos</span>
+                </div>
+                
+            </div>
+            
+            <div id="alert-container" class="mt-4 empty:hidden"></div>
+            
+            <div class="mt-5 border-t border-slate-800/60 pt-4 flex flex-col justify-center items-center gap-1.5">
+                <p class="font-semibold text-white text-sm sm:text-base tracking-wide drop-shadow-sm text-center">
+                    La Universidad Pública no puede esperar más. 🇦🇷
+                </p>
+                <p class="font-mono text-[10px] text-slate-500 opacity-60 mt-0.5" id="timestamp"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Fecha de inicio: 21 de Octubre 2025
+        const startDate = new Date('2025-10-21T00:00:00-03:00');
+
+        function updateCounter() {
+            const now = new Date();
+            const difference = now - startDate;
+            if (difference < 0) return;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((difference / 1000 / 60) % 60);
+            const seconds = Math.floor((difference / 1000) % 60);
+            
+            const diasElement = document.getElementById('dias');
+            const alertContainer = document.getElementById('alert-container');
+            
+            diasElement.innerText = days.toString().padStart(2, '0');
+            document.getElementById('horas').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('minutos').innerText = minutes.toString().padStart(2, '0');
+            document.getElementById('segundos').innerText = seconds.toString().padStart(2, '0');
+            document.getElementById('timestamp').innerText = now.toLocaleDateString();
+
+            if (days >= 200) {
+                diasElement.classList.remove('text-blue-400');
+                diasElement.classList.add('text-red-500', 'animate-pulse'); 
+
+                if (alertContainer && alertContainer.innerHTML === "") {
+                    alertContainer.innerHTML = `
+                        <div class="bg-red-950/40 border border-red-800 text-red-400 rounded-xl py-1.5 px-3 text-[11px] font-bold uppercase tracking-tight animate-pulse flex items-center justify-center gap-1 w-full max-w-[240px] sm:max-w-none mx-auto">
+                            <i data-lucide="alert-octagon" class="w-3.5 h-3.5"></i>
+                            ¡Urgente: Más de 200 días de incumplimiento!
+                        </div>
+                    `;
+                    lucide.createIcons();
+                }
+            } else {
+                diasElement.classList.remove('text-red-500', 'animate-pulse');
+                diasElement.classList.add('text-blue-400');
+                if (alertContainer) alertContainer.innerHTML = "";
+            }
+        }
+        
+        setInterval(updateCounter, 1000);
+        updateCounter();
+    </script>
+</body>
+</html>
