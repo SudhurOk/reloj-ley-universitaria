@@ -88,13 +88,14 @@
                 <a href="#cronologia" class="text-sm font-semibold hover:text-blue-300 transition-colors py-2 px-3 rounded-md hover:bg-white/5">
                     Ver Cronología
                 </a>
-                
+                <!--
                 <a href="marco.html" class="group relative bg-green-600 hover:bg-green-500 text-white px-5 py-2.5 rounded-xl text-sm font-black transition-all shadow-[0_4px_14px_0_rgba(22,163,74,0.39)] hover:shadow-green-500/50 flex items-center gap-2 overflow-hidden">
                     <div class="absolute inset-0 w-1/2 h-full bg-white/10 skew-x-[-25deg] -left-full group-hover:left-full transition-all duration-500"></div>
                     
                     <i data-lucide="camera" class="w-4 h-4"></i> 
                     <span class="relative">¡SUMÁ TU MARCO!</span>
                 </a>
+                -->
             </div>
         </div>
     </nav>
@@ -227,21 +228,37 @@
                     <p class="text-slate-600 mt-2"> Cámara Nacional de Apelaciones en lo Contencioso Administrativo Federal en Argentina ratificó el 31 de marzo de 2026 la vigencia de la Ley de Financiamiento Universitario (LFU), ordenando al gobierno cumplir con la actualización salarial de docentes y nodocentes, así como la recomposición de becas frente a la inflación.</p>
                 </div>
                 <div class="relative pl-6 md:pl-8">
-                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow animate-pulse"></div>
+                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow"></div>
+                    <!-- <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow animate-pulse"></div> -->
                     
                     <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">12 de Mayo de 2026</span>
-                    <h3 class="text-xl font-bold mt-1 italic text-blue-900">Hacia la Cuarta Marcha Federal Universitaria</h3>
+                    <h3 class="text-xl font-bold mt-1">Cuarta Marcha Federal Universitaria</h3>
                     <!-- NUEVO HISTORIAL -->
-                    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5 mt-3 shadow-sm">
-                        <p class="text-slate-700 text-sm md:text-base">
+                    <p class="text-slate-600 mt-2">
                             Ante el incumplimiento de los fallos judiciales y el ajuste presupuestario, la comunidad universitaria vuelve a las calles. La defensa de la educación pública es ahora.
-                        </p>
-                        
-                        <a href="marco.html" class="mt-4 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black py-3 px-6 rounded-xl transition-all hover:scale-105 shadow-md">
-                            <i data-lucide="camera" class="w-5 h-5"></i>
-                            SUMATE CON TU FOTO
-                        </a>
-                    </div>
+                    </p>
+                </div>
+                <div class="relative pl-6 md:pl-8">
+                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-orange-600 rounded-full border-4 border-white shadow"></div>
+                    <!-- <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow animate-pulse"></div> -->
+                    
+                    <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">11 de Junio de 2026</span>
+                    <h3 class="text-xl font-bold mt-1">Los aumentos no alcanzan para cubrir la inflación</h3>
+                    <!-- NUEVO HISTORIAL -->
+                    <p class="text-slate-600 mt-2">
+                            El Gobierno Nacional y los gremios docentes y nodocentes acordaron un aumento salarial del 24,3%, pero deberìa ser del 53,1% para recuperar el poder adquisitivo perdido en 2023. <strong> El reclamo de fondo por el presupuesto sigue en la Corte Suprema.</strong>
+                    </p>
+                </div>
+                <div class="relative pl-6 md:pl-8">
+                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-green-600 rounded-full border-4 border-white shadow"></div>
+                    <!-- <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow animate-pulse"></div> -->
+                    
+                    <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">25 de Junio de 2026</span>
+                    <h3 class="text-xl font-bold mt-1">La Corte Suprema deja firme la medida cautelar que ordena cumplir con la recomposición salarial desde 2023 y el aumento de becas ratificando la aplicación de la LFU</h3>
+                    <!-- NUEVO HISTORIAL -->
+                    <p class="text-slate-600 mt-2">
+                        El máximo tribunal rechazó los recursos del Estado Nacional y dejó firme la medida cautelar que obliga a aplicar los artículos 5 y 6 de la Ley 27.795. <strong>Esto exige al Gobierno la recomposición urgente de los salarios docentes, nodocentes y de las becas estudiantiles frente a la inflación.</strong>
+                    </p>
                 </div>
 
             </div>
@@ -270,13 +287,18 @@
             
             const diasElement = document.getElementById('dias');
             const alertContainer = document.getElementById('alert-container');
+            const isWidget = document.body.classList.contains('is-widget');
             
             diasElement.innerText = days.toString().padStart(2, '0');
             document.getElementById('horas').innerText = hours.toString().padStart(2, '0');
             document.getElementById('minutos').innerText = minutes.toString().padStart(2, '0');
             document.getElementById('timestamp').innerText = "Actualizado al: " + now.toLocaleString();
 
-            if (days >= 200) {
+            // Cálculo dinámico de meses aproximados (30.44 días por mes promedio)
+            const mesesTranscurridos = Math.floor(days / 30.44);
+
+            // Solo muestra la alerta si pasaron más de 200 días Y NO es modo widget
+            if (days >= 200 && !isWidget) {
                 diasElement.classList.remove('text-blue-400');
                 diasElement.classList.add('text-red-500', 'animate-pulse'); 
 
@@ -284,14 +306,21 @@
                     alertContainer.innerHTML = `
                         <div class="bg-red-600 text-white text-center py-3 px-4 font-black uppercase tracking-tighter animate-pulse z-[60] relative border-b-2 border-red-800">
                             <i data-lucide="alert-octagon" class="inline-block mr-2 w-5 h-5 align-middle"></i>
-                            ¡URGENTE: YA SON 7 MESES DE INCUMPLIMIENTO DE LA LEY DE FINANCIAMIENTO!
+                            ¡URGENTE: YA SON ${mesesTranscurridos} MESES DE INCUMPLIMIENTO DE LA LEY DE FINANCIAMIENTO!
                         </div>
                     `;
                     lucide.createIcons();
                 }
             } else {
-                diasElement.classList.remove('text-red-500', 'animate-pulse');
-                diasElement.classList.add('text-blue-400');
+                // Si es widget o no llegó a 200 días, mantenemos el estilo normal y vaciamos la alerta
+                if (days >= 200 && isWidget) {
+                    // Estilo visual del contador dentro del widget si pasa los 200 días (opcional)
+                    diasElement.classList.remove('text-blue-400');
+                    diasElement.classList.add('text-red-500', 'animate-pulse');
+                } else {
+                    diasElement.classList.remove('text-red-500', 'animate-pulse');
+                    diasElement.classList.add('text-blue-400');
+                }
                 if (alertContainer) alertContainer.innerHTML = "";
             }
         }
