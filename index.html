@@ -2,14 +2,14 @@
 <html lang="es" class="scroll-smooth">
 <head>
     <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-PBM1YJKZ6W"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-        
-          gtag('config', 'G-PBM1YJKZ6W');
-        </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PBM1YJKZ6W"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-PBM1YJKZ6W');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reloj del Desfinanciamiento Universitario - SUDHUR</title>
@@ -35,10 +35,8 @@
             -webkit-mask-image: -webkit-radial-gradient(white, black); 
         }
 
-        /* Clase para ocultar elementos en modo widget */
         .widget-hidden { display: none !important; }
 
-        /* --- MEJORAS PARA EL MODO WIDGET --- */
         body.is-widget {
             background: transparent !important;
             margin: 0;
@@ -58,12 +56,22 @@
         body.is-widget #capture-zone {
             margin: 0;
             border-radius: 20px;
-            /* Escalamos el contenido para que quepa en 200px-250px manteniendo legibilidad */
-            transform: scale(0.8); /*Casi el doble asi vemos si se vuelñve mas grande en moodle o campus*/
+            transform: scale(0.8);
             transform-origin: top center;
-            width: 600px; /* estaba en 400 */
+            width: 600px;
             box-shadow: none;
-            animation: none; /* Quitamos la animación en el widget para ahorrar recursos */
+            animation: none;
+        }
+
+        /* Estilo para captura optimizada de Historias IG */
+        .story-format {
+            width: 360px !important;
+            height: 640px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding: 20px !important;
         }
     </style>
 </head>
@@ -88,14 +96,6 @@
                 <a href="#cronologia" class="text-sm font-semibold hover:text-blue-300 transition-colors py-2 px-3 rounded-md hover:bg-white/5">
                     Ver Cronología
                 </a>
-                <!--
-                <a href="marco.html" class="group relative bg-green-600 hover:bg-green-500 text-white px-5 py-2.5 rounded-xl text-sm font-black transition-all shadow-[0_4px_14px_0_rgba(22,163,74,0.39)] hover:shadow-green-500/50 flex items-center gap-2 overflow-hidden">
-                    <div class="absolute inset-0 w-1/2 h-full bg-white/10 skew-x-[-25deg] -left-full group-hover:left-full transition-all duration-500"></div>
-                    
-                    <i data-lucide="camera" class="w-4 h-4"></i> 
-                    <span class="relative">¡SUMÁ TU MARCO!</span>
-                </a>
-                -->
             </div>
         </div>
     </nav>
@@ -142,15 +142,13 @@
         </div>
 
         <div id="actions-area" class="flex flex-col sm:flex-row justify-center gap-4 mb-16">
-            <button onclick="shareCounter()" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 w-full sm:w-auto text-lg">
+            <button onclick="openShareModal()" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 w-full sm:w-auto text-lg">
                 <i data-lucide="share-2"></i>
                 Compartir Contador
             </button>
-            <div id="share-status" class="hidden text-center text-sm font-semibold text-green-600 mt-2">Generando imagen...</div>
         </div>
 
         <div id="info-cards" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-            <!-- Tarjeta 1: Pérdida -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4">
                     <i data-lucide="trending-down"></i>
@@ -158,7 +156,6 @@
                 <h3 class="font-bold text-xl mb-2">Pérdida Salarial del 34%</h3>
                 <p class="text-slate-600">El salario docente universitario perdió un tercio de su poder de compra real entre 2023 y fines de 2025.</p>
             </div>
-            <!-- Tarjeta 2: Recomposición -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4">
                     <i data-lucide="trending-up"></i>
@@ -166,8 +163,6 @@
                 <h3 class="font-bold text-xl mb-2">Recomposición urgente del 51%</h3>
                 <p class="text-slate-600">Es el aumento salarial que hoy necesita un docente universitario para recuperar el poder adquisitivo perdido desde 2023.</p>
             </div>
-            <!-- 2da fila -->
-            <!-- Tarjeta 3: SUDHUR en lucha  -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mb-4">
                     <i data-lucide="alert-triangle"></i>
@@ -175,7 +170,6 @@
                 <h3 class="font-bold text-xl mb-2">SUDHUR en Lucha</h3>
                 <p class="text-slate-600">Desde la organización sindical exigimos el cumplimiento de la LFU y de los fallos judiciales para nuestra recomposición salarial de manera inmediata.</p>
             </div>
-            <!-- Tarjeta 4: El contador -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div class="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mb-4">
                     <i data-lucide="clock"></i>
@@ -185,14 +179,13 @@
             </div>
         </div>
 
-      <section id="cronologia" class="bg-white rounded-3xl p-6 md:p-10 shadow-lg border border-slate-200 mb-10">
+        <section id="cronologia" class="bg-white rounded-3xl p-6 md:p-10 shadow-lg border border-slate-200 mb-10">
             <h2 class="text-2xl font-bold mb-8 flex items-center gap-3 border-b pb-4">
                 <i data-lucide="scale" class="text-blue-600"></i>
                 Cronología del Conflicto
             </h2>
 
             <div class="relative border-l-4 border-blue-200 ml-4 md:ml-6 space-y-8 pb-4">
-                
                 <div class="relative pl-6 md:pl-8">
                     <div class="absolute -left-3.5 top-1 w-6 h-6 bg-blue-600 rounded-full border-4 border-white shadow"></div>
                     <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">21 de Agosto de 2025</span>
@@ -216,7 +209,7 @@
 
                 <div class="relative pl-6 md:pl-8">
                     <div class="absolute -left-3.5 top-1 w-6 h-6 bg-green-500 rounded-full border-4 border-white shadow"></div>
-                    <span class="text-sm font-bold text-green-600 uppercase tracking-wide">23 de Diciembre de 2025</span>
+                    <span class="text-sm font-bold text-green-500 uppercase tracking-wide">23 de Diciembre de 2025</span>
                     <h3 class="text-xl font-bold mt-1">Fallo de Primera Instancia</h3>
                     <p class="text-slate-600 mt-2">El Juzgado Nacional de Primera Instancia exige al Gobierno el cumplimiento inmediato de la ley en favor de las universidades.</p>
                 </div>
@@ -225,45 +218,103 @@
                     <div class="absolute -left-3.5 top-1 w-6 h-6 bg-green-600 rounded-full border-4 border-white shadow"></div>
                     <span class="text-sm font-bold text-green-600 uppercase tracking-wide">31 de Marzo de 2026</span>
                     <h3 class="text-xl font-bold mt-1">Ratificación de la Cámara</h3>
-                    <p class="text-slate-600 mt-2"> Cámara Nacional de Apelaciones en lo Contencioso Administrativo Federal en Argentina ratificó el 31 de marzo de 2026 la vigencia de la Ley de Financiamiento Universitario (LFU), ordenando al gobierno cumplir con la actualización salarial de docentes y nodocentes, así como la recomposición de becas frente a la inflación.</p>
-                </div>
-                <div class="relative pl-6 md:pl-8">
-                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow"></div>
-                    <!-- <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow animate-pulse"></div> -->
-                    
-                    <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">12 de Mayo de 2026</span>
-                    <h3 class="text-xl font-bold mt-1">Cuarta Marcha Federal Universitaria</h3>
-                    <!-- NUEVO HISTORIAL -->
-                    <p class="text-slate-600 mt-2">
-                            Ante el incumplimiento de los fallos judiciales y el ajuste presupuestario, la comunidad universitaria vuelve a las calles. La defensa de la educación pública es ahora.
-                    </p>
-                </div>
-                <div class="relative pl-6 md:pl-8">
-                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-orange-600 rounded-full border-4 border-white shadow"></div>
-                    <!-- <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow animate-pulse"></div> -->
-                    
-                    <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">11 de Junio de 2026</span>
-                    <h3 class="text-xl font-bold mt-1">Los aumentos no alcanzan para cubrir la inflación</h3>
-                    <!-- NUEVO HISTORIAL -->
-                    <p class="text-slate-600 mt-2">
-                            El Gobierno Nacional y los gremios docentes y nodocentes acordaron un aumento salarial del 24,3%, pero deberìa ser del 53,1% para recuperar el poder adquisitivo perdido en 2023. <strong> El reclamo de fondo por el presupuesto sigue en la Corte Suprema.</strong>
-                    </p>
-                </div>
-                <div class="relative pl-6 md:pl-8">
-                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-green-600 rounded-full border-4 border-white shadow"></div>
-                    <!-- <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow animate-pulse"></div> -->
-                    
-                    <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">25 de Junio de 2026</span>
-                    <h3 class="text-xl font-bold mt-1">La Corte Suprema deja firme la medida cautelar que ordena cumplir con la recomposición salarial desde 2023 y el aumento de becas ratificando la aplicación de la LFU</h3>
-                    <!-- NUEVO HISTORIAL -->
-                    <p class="text-slate-600 mt-2">
-                        El máximo tribunal rechazó los recursos del Estado Nacional y dejó firme la medida cautelar que obliga a aplicar los artículos 5 y 6 de la Ley 27.795. <strong>Esto exige al Gobierno la recomposición urgente de los salarios docentes, nodocentes y de las becas estudiantiles frente a la inflación.</strong>
-                    </p>
+                    <p class="text-slate-600 mt-2">Cámara Nacional de Apelaciones en lo Contencioso Administrativo Federal ratificó la vigencia de la LFU, ordenando la actualización salarial y de becas.</p>
                 </div>
 
+                <div class="relative pl-6 md:pl-8">
+                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-red-600 rounded-full border-4 border-white shadow"></div>
+                    <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">12 de Mayo de 2026</span>
+                    <h3 class="text-xl font-bold mt-1">Cuarta Marcha Federal Universitaria</h3>
+                    <p class="text-slate-600 mt-2">Ante el incumplimiento de los fallos judiciales y el ajuste presupuestario, la comunidad universitaria vuelve a las calles.</p>
+                </div>
+
+                <div class="relative pl-6 md:pl-8">
+                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-orange-600 rounded-full border-4 border-white shadow"></div>
+                    <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">11 de Junio de 2026</span>
+                    <h3 class="text-xl font-bold mt-1">Los aumentos no alcanzan para cubrir la inflación</h3>
+                    <p class="text-slate-600 mt-2">Acuerdo de aumento del 24,3% pero debería ser del 53,1% para recuperar el poder adquisitivo perdido en 2023. El reclamo sigue en la Corte Suprema.</p>
+                </div>
+
+                <div class="relative pl-6 md:pl-8">
+                    <div class="absolute -left-3.5 top-1 w-6 h-6 bg-green-600 rounded-full border-4 border-white shadow"></div>
+                    <span class="text-sm font-bold text-blue-600 uppercase tracking-wide">25 de Junio de 2026</span>
+                    <h3 class="text-xl font-bold mt-1">La Corte Suprema deja firme la medida cautelar</h3>
+                    <p class="text-slate-600 mt-2">El máximo tribunal obliga a aplicar los artículos 5 y 6 de la Ley 27.795 exigiendo recomposición de salarios y becas.</p>
+                </div>
             </div>
-    </section>
+        </section>
     </main>
+
+    <!-- MODAL RESPONSIVE DE COMPARTIR -->
+    <div id="share-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
+            
+            <div class="flex justify-between items-center p-5 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="share-2" class="text-blue-600"></i>
+                    <h3 class="font-bold text-lg text-slate-800">Compartir Contador</h3>
+                </div>
+                <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-6">
+                <!-- Opción 1: Captura Stories -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white rounded-xl">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Historia de Instagram (Captura)</h4>
+                            <p class="text-xs text-slate-500">Genera la imagen adaptada verticalmente para subir a Stories.</p>
+                        </div>
+                    </div>
+                    <button onclick="shareCounter('story')" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="camera" class="w-4 h-4"></i> Generar Captura para IG
+                    </button>
+                </div>
+
+                <!-- Opción 2: Captura Simple -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-blue-600 text-white rounded-xl">
+                            <i data-lucide="image" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Captura Normal</h4>
+                            <p class="text-xs text-slate-500">Descarga o comparte la imagen del contador estándar.</p>
+                        </div>
+                    </div>
+                    <button onclick="shareCounter('standard')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i> Generar Captura Web
+                    </button>
+                </div>
+
+                <!-- Opción 3: Embeber iFrame -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-slate-800 text-white rounded-xl">
+                            <i data-lucide="code" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">Incrustar en Sitio Web (iFrame)</h4>
+                            <p class="text-xs text-slate-500">Copia el código para incluir el reloj en un campus, moodle o web.</p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <textarea id="iframe-code" readonly class="w-full h-20 p-2 text-xs font-mono bg-white border border-slate-300 rounded-lg text-slate-600 resize-none focus:outline-none">&lt;iframe src="https://sudhurok.github.io/reloj-ley-universitaria/reloj-contador.html" width="100%" height="300" frameborder="0" scrolling="no" style="border:none; overflow:hidden;"&gt;&lt;/iframe&gt;</textarea>
+                        <button onclick="copyIframeCode()" class="absolute bottom-3 right-3 bg-slate-800 hover:bg-slate-700 text-white text-xs px-3 py-1.5 rounded-md font-semibold transition-all flex items-center gap-1">
+                            <i data-lucide="copy" class="w-3 h-3"></i> Copiar Código
+                        </button>
+                    </div>
+                </div>
+
+                <div id="modal-status" class="hidden text-center text-sm font-semibold text-blue-600"></div>
+            </div>
+        </div>
+    </div>
 
     <footer id="main-footer" class="bg-slate-900 text-slate-400 py-8 text-center">
         <p>Información respaldada por documentos judiciales (CAF 039475/2025).</p>
@@ -294,10 +345,8 @@
             document.getElementById('minutos').innerText = minutes.toString().padStart(2, '0');
             document.getElementById('timestamp').innerText = "Actualizado al: " + now.toLocaleString();
 
-            // Cálculo dinámico de meses aproximados (30.44 días por mes promedio)
             const mesesTranscurridos = Math.floor(days / 30.44);
 
-            // Solo muestra la alerta si pasaron más de 200 días Y NO es modo widget
             if (days >= 200 && !isWidget) {
                 diasElement.classList.remove('text-blue-400');
                 diasElement.classList.add('text-red-500', 'animate-pulse'); 
@@ -312,9 +361,7 @@
                     lucide.createIcons();
                 }
             } else {
-                // Si es widget o no llegó a 200 días, mantenemos el estilo normal y vaciamos la alerta
                 if (days >= 200 && isWidget) {
-                    // Estilo visual del contador dentro del widget si pasa los 200 días (opcional)
                     diasElement.classList.remove('text-blue-400');
                     diasElement.classList.add('text-red-500', 'animate-pulse');
                 } else {
@@ -327,7 +374,6 @@
         setInterval(updateCounter, 1000);
         updateCounter();
 
-        // MODO WIDGET: Detectar parámetro ?widget=true en la URL
         function checkWidgetMode() {
             const params = new URLSearchParams(window.location.search);
             if (params.get('widget') === 'true') {
@@ -342,21 +388,51 @@
         }
         checkWidgetMode();
 
-        async function shareCounter() {
+        // Funciones Modal
+        function openShareModal() {
+            document.getElementById('share-modal').classList.remove('hidden');
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').classList.add('hidden');
+        }
+
+        function copyIframeCode() {
+            const copyText = document.getElementById("iframe-code");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            
+            const status = document.getElementById('modal-status');
+            status.innerText = "¡Código de iframe copiado!";
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 2500);
+        }
+
+        async function shareCounter(mode) {
             const node = document.getElementById('capture-zone');
-            const statusText = document.getElementById('share-status');
-            const width = node.offsetWidth;
-            const height = node.offsetHeight;
+            const statusText = document.getElementById('modal-status');
 
             try {
                 statusText.innerText = "Generando imagen...";
                 statusText.classList.remove('hidden');
+
+                if (mode === 'story') {
+                    node.classList.add('story-format');
+                }
+
+                const width = node.offsetWidth;
+                const height = node.offsetHeight;
 
                 const dataUrl = await domtoimage.toPng(node, {
                     width: width,   
                     height: height, 
                     style: { 'margin': '0', 'transform': 'scale(1)', 'left': '0', 'top': '0' }
                 });
+
+                if (mode === 'story') {
+                    node.classList.remove('story-format');
+                }
 
                 const response = await fetch(dataUrl);
                 const blob = await response.blob();
@@ -370,7 +446,7 @@
                     });
                 } else {
                     const link = document.createElement('a');
-                    link.download = 'contador_sudhur.png';
+                    link.download = mode === 'story' ? 'contador_story_sudhur.png' : 'contador_sudhur.png';
                     link.href = dataUrl;
                     link.click();
                 }
@@ -378,10 +454,12 @@
                 console.error('Error:', err);
                 statusText.innerText = "Error al generar imagen.";
             } finally {
+                if (mode === 'story') {
+                    node.classList.remove('story-format');
+                }
                 setTimeout(() => statusText.classList.add('hidden'), 2000);
             }
         }
     </script>
 </body>
-
 </html>
