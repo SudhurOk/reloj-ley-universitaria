@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reloj del Desfinanciamiento Universitario - SUDHUR</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            margin: 0;
+        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .counter-box { animation: pulse-border 3s infinite; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-800 antialiased">
+
+    <div class="w-full max-w-3xl mx-auto">
+        <div id="capture-zone" class="bg-slate-900 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden counter-box border border-slate-700">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-blue-600 opacity-20 blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-blue-600 opacity-20 blur-3xl"></div>
+            
+            <div class="relative z-10 text-center">
+                <p class="text-blue-300 font-semibold mb-2 uppercase tracking-widest text-sm">Contador del incumplimiento</p>
+                <h1 class="text-2xl md:text-3xl font-bold text-white mb-8">La Ley de Financiamiento Universitario lleva sancionada</h1>
+                
+                <div class="flex flex-wrap justify-center gap-4 md:gap-8">
+                    <div class="flex flex-col items-center">
+                        <div class="bg-slate-800 text-blue-400 font-mono text-5xl md:text-7xl font-bold px-4 py-3 md:px-6 md:py-4 rounded-xl shadow-inner min-w-[100px] md:min-w-[140px]" id="dias">00</div>
+                        <span class="text-slate-400 mt-2 text-sm md:text-base font-semibold uppercase">Días</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bg-slate-800 text-white font-mono text-5xl md:text-7xl font-bold px-4 py-3 md:px-6 md:py-4 rounded-xl shadow-inner min-w-[100px] md:min-w-[140px]" id="horas">00</div>
+                        <span class="text-slate-400 mt-2 text-sm md:text-base font-semibold uppercase">Horas</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bg-slate-800 text-white font-mono text-5xl md:text-7xl font-bold px-4 py-3 md:px-6 md:py-4 rounded-xl shadow-inner min-w-[100px] md:min-w-[140px]" id="minutos">00</div>
+                        <span class="text-slate-400 mt-2 text-sm md:text-base font-semibold uppercase">Minutos</span>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-slate-300 text-sm md:text-base">
+                    <p>La Universidad Pública no puede esperar más. 🇦🇷</p>
+                    <p class="font-mono mt-2 opacity-50 text-xs" id="timestamp"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Fecha de inicio: 21 de Octubre 2025
+        const startDate = new Date('2025-10-21T00:00:00-03:00');
+
+        function updateCounter() {
+            const now = new Date();
+            const difference = now - startDate;
+            if (difference < 0) return;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((difference / 1000 / 60) % 60);
+            
+            const diasElement = document.getElementById('dias');
+            
+            diasElement.innerText = days.toString().padStart(2, '0');
+            document.getElementById('horas').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('minutos').innerText = minutes.toString().padStart(2, '0');
+            document.getElementById('timestamp').innerText = "Actualizado al: " + now.toLocaleString();
+
+            if (days >= 200) {
+                diasElement.classList.remove('text-blue-400');
+                diasElement.classList.add('text-red-500', 'animate-pulse'); 
+            } else {
+                diasElement.classList.remove('text-red-500', 'animate-pulse');
+                diasElement.classList.add('text-blue-400');
+            }
+        }
+        setInterval(updateCounter, 1000);
+        updateCounter();
+    </script>
+</body>
+</html>
