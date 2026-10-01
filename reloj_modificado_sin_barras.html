@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reloj del Desfinanciamiento & Próxima Convocatoria - SUDHUR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        .font-mono { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-variant-numeric: tabular-nums;
+        }
+        
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        .counter-box { animation: pulse-border 3s infinite; }
+
+        /* Efecto de barrido (Wipe Effect) */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: clip-path 800ms cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        .slide-active {
+            clip-path: inset(0 0 0 0);
+            pointer-events: auto;
+            z-index: 10;
+        }
+        .slide-hidden-left {
+            clip-path: inset(0 100% 0 0);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .slide-hidden-right {
+            clip-path: inset(0 0 0 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slide-2-green {
+            background: #1f4d3a !important;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Fondo completo del segundo reloj */
+        #capture-zone.clock-2-active {
+            background: #1f4d3a !important;
+        }
+
+        #capture-zone.clock-2-active .bg-slate-800 {
+            background-color: #173b2d !important;
+        }
+
+        .slide-2-green .clock-number-2 {
+            color: #67d9ff !important;
+        }
+    </style>
+
+    <style>
+    /* Ocultar elementos externos de estado/navegación */
+    #progress-bar, .progress-bar, #top-progress, .top-progress, .progress-container,
+    #statusText, #pauseBtn, #pause-button, .status-bar, .navigation-bar, .clock-navigation, .clock-status {
+        display: none !important;
+    }
+    #statusText { visibility: hidden !important; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-800 antialiased">
+
+    <div class="w-full max-w-3xl mx-auto">
+        <!-- Main Card Container -->
+        <div id="capture-zone" class="bg-slate-900 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden counter-box border border-slate-700 transition-all duration-300">
+            
+            <!-- Ambient Blur Background Orbs -->
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-blue-600 opacity-20 blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-blue-600 opacity-20 blur-3xl pointer-events-none"></div>
+
+            <!-- Slides Overlay Container -->
+            <div class="relative z-10 min-h-[340px] md:min-h-[320px] flex items-center overflow-hidden">
+                
+                <!-- Slide 1: Contador del Incumplimiento -->
+                <div id="slide-1" class="slide slide-active flex flex-col items-center text-center w-full">
+                    <div>
+                        <p class="text-blue-300 font-semibold mb-2 uppercase tracking-widest text-sm">Contador del incumplimiento</p>
+                        <h1 class="text-2xl md:text-3xl font-bold text-white mb-4">La Ley de Financiamiento Universitario lleva sancionada</h1>
+                    </div>
+
+                    <!-- Cards Row -->
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-4 my-2">
+                        <!-- Días -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-slate-800 text-blue-400 font-mono text-4xl md:text-6xl font-bold px-3 py-2 md:px-5 md:py-3 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px]" id="dias-1">00</div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Días</span>
+                        </div>
+                        <!-- Horas -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-slate-800 text-white font-mono text-4xl md:text-6xl font-bold px-3 py-2 md:px-5 md:py-3 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px]" id="horas-1">00</div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Horas</span>
+                        </div>
+                        <!-- Minutos -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-slate-800 text-white font-mono text-4xl md:text-6xl font-bold px-3 py-2 md:px-5 md:py-3 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px]" id="minutos-1">00</div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Minutos</span>
+                        </div>
+                        <!-- Segundos -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-slate-800 text-blue-400 font-mono text-4xl md:text-6xl font-bold px-3 py-2 md:px-5 md:py-3 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px]" id="segundos-1">00</div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Segundos</span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Text -->
+                    <div class="mt-4 text-slate-300 text-sm md:text-base">
+                        <p>La Universidad Pública no puede esperar más. 🇦🇷</p>
+                        <p class="font-mono mt-1 opacity-50 text-xs" id="timestamp">Actualizado al: --/--/---- --:--:--</p>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Próxima Convocatoria -->
+                <div id="slide-2" class="slide slide-hidden-right slide-2-green flex flex-col items-center text-center w-full">
+                    <div>
+                        <p class="text-amber-300 font-semibold mb-2 uppercase tracking-widest text-sm">Próxima convocatoria</p>
+                        <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">5ta Marcha Universitaria</h1>
+                        <p class="text-slate-300 text-xs md:text-sm font-medium mb-3">Jueves 15 de Octubre de 2026 — 13:00 hs</p>
+                    </div>
+
+                    <!-- Cards Row -->
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-4 my-2" id="countdown-cards">
+                        <!-- Días -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-slate-800 text-sky-300 font-mono text-4xl md:text-6xl font-bold px-3 py-2 md:px-5 md:py-3 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] clock-number-2" id="dias-2">00</div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Días</span>
+                        </div>
+                        <!-- Horas -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-slate-800 text-white font-mono text-4xl md:text-6xl font-bold px-3 py-2 md:px-5 md:py-3 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] clock-number-2" id="horas-2">00</div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Horas</span>
+                        </div>
+                        <!-- Minutos -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-slate-800 text-white font-mono text-4xl md:text-6xl font-bold px-3 py-2 md:px-5 md:py-3 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] clock-number-2" id="minutos-2">00</div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Minutos</span>
+                        </div>
+                        <!-- Segundos -->
+                        <div class="flex flex-col items-center">
+                            <div class="bg-slate-800 text-sky-300 font-mono text-4xl md:text-6xl font-bold px-3 py-2 md:px-5 md:py-3 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] clock-number-2" id="segundos-2">00</div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Segundos</span>
+                        </div>
+                    </div>
+
+                    <!-- Special Message when time is up -->
+                    <div id="marcha-today-msg" class="hidden my-4 p-3 rounded-xl bg-sky-500/20 border border-amber-500/40 text-amber-300 font-bold text-lg md:text-xl animate-pulse">
+                        ¡Es hoy! Convocatoria activa a la 5ta Marcha Universitaria. 🇦🇷
+                    </div>
+
+                    <!-- Footer Text -->
+                    <div class="mt-4 text-slate-300 text-sm md:text-base">
+                        <p>En defensa de la Educación Pública Argentina. 🇦🇷</p>
+                        <p class="font-mono mt-1 opacity-50 text-xs" id="timestamp-2">Actualizado al: --/--/---- --:--:--</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            const startDate1 = new Date('2025-10-21T00:00:00-03:00');
+            const targetDate2 = new Date('2026-10-15T13:00:00-03:00');
+
+            const SLIDE_DURATION = 7000;
+            let currentSlide = 0;
+            let elapsedInSlide = 0;
+            let isHovered = false;
+
+            const slide1 = document.getElementById('slide-1');
+            const slide2 = document.getElementById('slide-2');
+            const captureZone = document.getElementById('capture-zone');
+
+            function updateClocks() {
+                const now = new Date();
+
+                const day = now.getDate();
+                const month = now.getMonth() + 1;
+                const year = now.getFullYear();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const formattedTime = `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+
+                // Reloj 1
+                const diff1 = now - startDate1;
+                if (diff1 >= 0) {
+                    const days1 = Math.floor(diff1 / (1000 * 60 * 60 * 24));
+                    const hours1 = Math.floor((diff1 / (1000 * 60 * 60)) % 24);
+                    const minutes1 = Math.floor((diff1 / (1000 * 60)) % 60);
+                    const seconds1 = Math.floor((diff1 / 1000) % 60);
+
+                    const diasElement1 = document.getElementById('dias-1');
+                    diasElement1.innerText = days1.toString().padStart(2, '0');
+                    document.getElementById('horas-1').innerText = hours1.toString().padStart(2, '0');
+                    document.getElementById('minutos-1').innerText = minutes1.toString().padStart(2, '0');
+                    document.getElementById('segundos-1').innerText = seconds1.toString().padStart(2, '0');
+
+                    if (days1 >= 200) {
+                        diasElement1.classList.remove('text-blue-400');
+                        diasElement1.classList.add('text-red-500', 'animate-pulse');
+                    } else {
+                        diasElement1.classList.remove('text-red-500', 'animate-pulse');
+                        diasElement1.classList.add('text-blue-400');
+                    }
+                }
+                document.getElementById('timestamp').innerText = "Actualizado al: " + formattedTime;
+                document.getElementById('timestamp-2').innerText = "Actualizado al: " + formattedTime;
+
+                // Reloj 2
+                const diff2 = targetDate2 - now;
+                const countdownCards = document.getElementById('countdown-cards');
+                const marchaMsg = document.getElementById('marcha-today-msg');
+
+                if (diff2 <= 0) {
+                    captureZone.classList.remove('clock-2-active');
+                    slide2.classList.add('hidden');
+                    if (currentSlide === 1) {
+                        goToSlide(0);
+                    }
+                    return;
+                }
+
+                if (diff2 > 0) {
+                    const days2 = Math.floor(diff2 / (1000 * 60 * 60 * 24));
+                    const hours2 = Math.floor((diff2 / (1000 * 60 * 60)) % 24);
+                    const minutes2 = Math.floor((diff2 / (1000 * 60)) % 60);
+                    const seconds2 = Math.floor((diff2 / 1000) % 60);
+
+                    document.getElementById('dias-2').innerText = days2.toString().padStart(2, '0');
+                    document.getElementById('horas-2').innerText = hours2.toString().padStart(2, '0');
+                    document.getElementById('minutos-2').innerText = minutes2.toString().padStart(2, '0');
+                    document.getElementById('segundos-2').innerText = seconds2.toString().padStart(2, '0');
+
+                    countdownCards.classList.remove('hidden');
+                    marchaMsg.classList.add('hidden');
+                } else {
+                    countdownCards.classList.add('hidden');
+                    marchaMsg.classList.remove('hidden');
+                }
+            }
+
+            updateClocks();
+            setInterval(updateClocks, 1000);
+
+            function goToSlide(index) {
+                currentSlide = index;
+                elapsedInSlide = 0;
+
+                if (currentSlide === 0) {
+                    captureZone.classList.remove('clock-2-active');
+                    slide1.className = "slide slide-active flex flex-col items-center text-center w-full";
+                    slide2.className = "slide slide-hidden-right slide-2-green flex flex-col items-center text-center w-full";
+                } else {
+                    captureZone.classList.add('clock-2-active');
+                    slide1.className = "slide slide-hidden-left flex flex-col items-center text-center w-full";
+                    slide2.className = "slide slide-active slide-2-green flex flex-col items-center text-center w-full";
+                }
+            }
+
+            captureZone.addEventListener('mouseenter', () => { isHovered = true; });
+            captureZone.addEventListener('mouseleave', () => { isHovered = false; });
+
+            const TICK_INTERVAL = 100;
+            setInterval(() => {
+                if (!isHovered) {
+                    elapsedInSlide += TICK_INTERVAL;
+
+                    if (elapsedInSlide >= SLIDE_DURATION) {
+                        if (currentSlide === 0 && new Date() < targetDate2) {
+                            goToSlide(1);
+                        } else if (currentSlide === 1) {
+                            goToSlide(0);
+                        }
+                    }
+                }
+            }, TICK_INTERVAL);
+        });
+    </script>
+</body>
+</html>
