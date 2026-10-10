@@ -86,7 +86,6 @@
             overflow: hidden;
         }
 
-        /* Contenedor optimizado para ocultar el header del mural */
         .mural-zoom-container {
             width: 100%;
             height: 100%;
@@ -105,21 +104,22 @@
             pointer-events: auto;
         }
 
-        /* Fondos según la slide activa en capture-zone */
-        #capture-zone.clock-2-active {
-            background: #1f4d3a !important;
-        }
+        #capture-zone.clock-2-active { background: #1f4d3a !important; }
+        #capture-zone.clock-3-active { background: #020617 !important; }
+        #capture-zone.clock-2-active .bg-slate-800 { background-color: #173b2d !important; }
+        .slide-2-green .clock-number-2 { color: #67d9ff !important; }
 
-        #capture-zone.clock-3-active {
-            background: #020617 !important;
+        /* NUEVO: Tamaños dinámicos para los relojes (se adaptan al zoom/pantalla) */
+        .responsive-clock {
+            /* clamp(mínimo, valor dinámico vw, máximo) */
+            font-size: clamp(3rem, 8vw, 12rem);
+            min-width: clamp(100px, 12vw, 250px);
+            padding: clamp(0.75rem, 2vw, 2rem) clamp(1rem, 3vw, 3rem);
+            line-height: 1;
         }
-
-        #capture-zone.clock-2-active .bg-slate-800 {
-            background-color: #173b2d !important;
-        }
-
-        .slide-2-green .clock-number-2 {
-            color: #67d9ff !important;
+        
+        .responsive-label {
+            font-size: clamp(0.875rem, 1.5vw, 2rem);
         }
     </style>
 
@@ -133,103 +133,89 @@
 </head>
 <body class="bg-slate-950 text-slate-800 antialiased">
 
-    <!-- Main Card Container ocupando toda la pantalla con el borde titilante -->
     <div class="w-full h-full flex items-center justify-center">
         <div id="capture-zone" class="bg-slate-900 w-full h-full rounded-3xl p-6 md:p-12 relative overflow-hidden counter-box border border-slate-700 flex flex-col justify-center items-center transition-all duration-300">
             
-            <!-- Ambient Blur Background Orbs -->
             <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-blue-600 opacity-20 blur-3xl pointer-events-none"></div>
             <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 rounded-full bg-blue-600 opacity-20 blur-3xl pointer-events-none"></div>
 
-            <!-- Slides Overlay Container -->
             <div class="relative z-10 w-full h-full flex items-center justify-center overflow-hidden">
                 
-                <!-- Slide 1: Contador del Incumplimiento -->
+                <!-- Slide 1 -->
                 <div id="slide-1" class="slide slide-active flex flex-col items-center justify-center text-center w-full h-full px-4">
                     <div>
                         <p class="text-blue-300 font-semibold mb-3 uppercase tracking-widest text-sm md:text-base">Contador del incumplimiento</p>
-                        <h1 class="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-8 max-w-4xl mx-auto">La Ley de Financiamiento Universitario lleva sancionada</h1>
+                        <!-- Texto del título también un poco más adaptable -->
+                        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-8 max-w-5xl mx-auto">La Ley de Financiamiento Universitario lleva sancionada</h1>
                     </div>
 
-                    <!-- Cards Row -->
-                    <div class="flex flex-wrap justify-center gap-4 md:gap-8 my-4">
-                        <!-- Días -->
+                    <div class="flex flex-wrap justify-center gap-4 md:gap-8 lg:gap-12 my-4">
                         <div class="flex flex-col items-center">
-                            <div class="bg-slate-800 text-blue-400 font-mono text-5xl sm:text-6xl md:text-8xl font-bold px-4 py-3 md:px-8 md:py-6 rounded-2xl shadow-inner min-w-[100px] md:min-w-[160px]" id="dias-1">00</div>
-                            <span class="text-slate-400 mt-3 text-sm md:text-lg font-semibold uppercase tracking-wider">Días</span>
+                            <div class="bg-slate-800 text-blue-400 font-mono font-bold rounded-2xl shadow-inner responsive-clock" id="dias-1">00</div>
+                            <span class="text-slate-400 mt-3 font-semibold uppercase tracking-wider responsive-label">Días</span>
                         </div>
-                        <!-- Horas -->
                         <div class="flex flex-col items-center">
-                            <div class="bg-slate-800 text-white font-mono text-5xl sm:text-6xl md:text-8xl font-bold px-4 py-3 md:px-8 md:py-6 rounded-2xl shadow-inner min-w-[100px] md:min-w-[160px]" id="horas-1">00</div>
-                            <span class="text-slate-400 mt-3 text-sm md:text-lg font-semibold uppercase tracking-wider">Horas</span>
+                            <div class="bg-slate-800 text-white font-mono font-bold rounded-2xl shadow-inner responsive-clock" id="horas-1">00</div>
+                            <span class="text-slate-400 mt-3 font-semibold uppercase tracking-wider responsive-label">Horas</span>
                         </div>
-                        <!-- Minutos -->
                         <div class="flex flex-col items-center">
-                            <div class="bg-slate-800 text-white font-mono text-5xl sm:text-6xl md:text-8xl font-bold px-4 py-3 md:px-8 md:py-6 rounded-2xl shadow-inner min-w-[100px] md:min-w-[160px]" id="minutos-1">00</div>
-                            <span class="text-slate-400 mt-3 text-sm md:text-lg font-semibold uppercase tracking-wider">Minutos</span>
+                            <div class="bg-slate-800 text-white font-mono font-bold rounded-2xl shadow-inner responsive-clock" id="minutos-1">00</div>
+                            <span class="text-slate-400 mt-3 font-semibold uppercase tracking-wider responsive-label">Minutos</span>
                         </div>
-                        <!-- Segundos -->
                         <div class="flex flex-col items-center">
-                            <div class="bg-slate-800 text-blue-400 font-mono text-5xl sm:text-6xl md:text-8xl font-bold px-4 py-3 md:px-8 md:py-6 rounded-2xl shadow-inner min-w-[100px] md:min-w-[160px]" id="segundos-1">00</div>
-                            <span class="text-slate-400 mt-3 text-sm md:text-lg font-semibold uppercase tracking-wider">Segundos</span>
+                            <div class="bg-slate-800 text-blue-400 font-mono font-bold rounded-2xl shadow-inner responsive-clock" id="segundos-1">00</div>
+                            <span class="text-slate-400 mt-3 font-semibold uppercase tracking-wider responsive-label">Segundos</span>
                         </div>
                     </div>
 
-                    <!-- Footer Text -->
-                    <div class="mt-8 text-slate-300 text-base md:text-lg">
+                    <div class="mt-12 text-slate-300 text-base lg:text-xl">
                         <p class="font-medium">La Universidad Pública no puede esperar más. 🇦🇷</p>
                         <p class="font-mono mt-2 opacity-60 text-xs md:text-sm" id="timestamp">Actualizado al: --/--/---- --:--:--</p>
                     </div>
                 </div>
 
-                <!-- Slide 2: Próxima Convocatoria -->
+                <!-- Slide 2 -->
                 <div id="slide-2" class="slide slide-hidden-right slide-2-green flex flex-col items-center justify-center text-center w-full h-full px-4">
                     <div>
                         <p class="text-amber-300 font-semibold mb-3 uppercase tracking-widest text-sm md:text-base">Jueves 15 de Octubre de 2026 — 13:00 hs</p>
-                        <h1 class="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-2">5ta Marcha Universitaria</h1>
-                        <p class="text-slate-300 text-sm md:text-base font-medium mb-6">Marchamos Todos/as</p>
+                        <h1 class="text-3xl md:text-5xl lg:text-7xl font-bold text-white mb-4">5ta Marcha Universitaria</h1>
+                        <p class="text-slate-300 text-base md:text-xl font-medium mb-8">Marchamos Todos/as</p>
                     </div>
 
-                    <!-- Cards Row -->
-                    <div class="flex flex-wrap justify-center gap-4 md:gap-8 my-4" id="countdown-cards">
-                        <!-- Días -->
+                    <div class="flex flex-wrap justify-center gap-4 md:gap-8 lg:gap-12 my-4" id="countdown-cards">
                         <div class="flex flex-col items-center">
-                            <div class="bg-slate-800 text-sky-300 font-mono text-5xl sm:text-6xl md:text-8xl font-bold px-4 py-3 md:px-8 md:py-6 rounded-2xl shadow-inner min-w-[100px] md:min-w-[160px] clock-number-2" id="dias-2">00</div>
-                            <span class="text-slate-400 mt-3 text-sm md:text-lg font-semibold uppercase tracking-wider">Días</span>
+                            <div class="bg-slate-800 text-sky-300 font-mono font-bold rounded-2xl shadow-inner responsive-clock clock-number-2" id="dias-2">00</div>
+                            <span class="text-slate-400 mt-3 font-semibold uppercase tracking-wider responsive-label">Días</span>
                         </div>
-                        <!-- Horas -->
                         <div class="flex flex-col items-center">
-                            <div class="bg-slate-800 text-white font-mono text-5xl sm:text-6xl md:text-8xl font-bold px-4 py-3 md:px-8 md:py-6 rounded-2xl shadow-inner min-w-[100px] md:min-w-[160px] clock-number-2" id="horas-2">00</div>
-                            <span class="text-slate-400 mt-3 text-sm md:text-lg font-semibold uppercase tracking-wider">Horas</span>
+                            <div class="bg-slate-800 text-white font-mono font-bold rounded-2xl shadow-inner responsive-clock clock-number-2" id="horas-2">00</div>
+                            <span class="text-slate-400 mt-3 font-semibold uppercase tracking-wider responsive-label">Horas</span>
                         </div>
-                        <!-- Minutos -->
                         <div class="flex flex-col items-center">
-                            <div class="bg-slate-800 text-white font-mono text-5xl sm:text-6xl md:text-8xl font-bold px-4 py-3 md:px-8 md:py-6 rounded-2xl shadow-inner min-w-[100px] md:min-w-[160px] clock-number-2" id="minutos-2">00</div>
-                            <span class="text-slate-400 mt-3 text-sm md:text-lg font-semibold uppercase tracking-wider">Minutos</span>
+                            <div class="bg-slate-800 text-white font-mono font-bold rounded-2xl shadow-inner responsive-clock clock-number-2" id="minutos-2">00</div>
+                            <span class="text-slate-400 mt-3 font-semibold uppercase tracking-wider responsive-label">Minutos</span>
                         </div>
-                        <!-- Segundos -->
                         <div class="flex flex-col items-center">
-                            <div class="bg-slate-800 text-sky-300 font-mono text-5xl sm:text-6xl md:text-8xl font-bold px-4 py-3 md:px-8 md:py-6 rounded-2xl shadow-inner min-w-[100px] md:min-w-[160px] clock-number-2" id="segundos-2">00</div>
-                            <span class="text-slate-400 mt-3 text-sm md:text-lg font-semibold uppercase tracking-wider">Segundos</span>
+                            <div class="bg-slate-800 text-sky-300 font-mono font-bold rounded-2xl shadow-inner responsive-clock clock-number-2" id="segundos-2">00</div>
+                            <span class="text-slate-400 mt-3 font-semibold uppercase tracking-wider responsive-label">Segundos</span>
                         </div>
                     </div>
 
-                    <!-- Special Message when time is up -->
                     <div id="marcha-today-msg" class="hidden my-6 p-4 rounded-2xl bg-sky-500/20 border border-amber-500/40 text-amber-300 font-bold text-xl md:text-2xl animate-pulse">
                         ¡Es hoy! Convocatoria activa a la 5ta Marcha Universitaria. 🇦🇷
                     </div>
 
-                    <!-- Footer Text -->
-                    <div class="mt-8 text-slate-300 text-base md:text-lg">
-                        <p class="font-medium">Por la educación, la soberanía y la democracía . 🇦🇷</p>
+                    <div class="mt-12 text-slate-300 text-base lg:text-xl">
+                        <p class="font-medium">Por la educación, la soberanía y la democracía. 🇦🇷</p>
                         <p class="font-mono mt-2 opacity-60 text-xs md:text-sm" id="timestamp-2">Actualizado al: --/--/---- --:--:--</p>
                     </div>
                 </div>
 
-                <!-- Slide 3: Mural en vivo con el borde titilante y el footer visible -->
+                <!-- Slide 3 -->
                 <div id="slide-3" class="slide slide-hidden-right slide-3-mural flex flex-col items-center justify-center w-full h-full p-0">
                     <div class="mural-zoom-container">
-                        <iframe src="https://animus94.github.io/foto-frase/mural" title="Mural 5ta Marcha" scrolling="no"></iframe>
+                        <!-- ID AGREGADO AQUÍ PARA PODER RECARGARLO -->
+                        <iframe id="mural-iframe" src="https://animus94.github.io/foto-frase/mural" title="Mural 5ta Marcha" scrolling="no"></iframe>
                     </div>
                 </div>
 
@@ -244,8 +230,8 @@
             const startDate1 = new Date('2025-10-21T00:00:00-03:00');
             const targetDate2 = new Date('2026-10-15T13:00:00-03:00');
 
-            const SLIDE_DURATION = 7000;
-            let currentSlide = 0; // 0: Reloj 1, 1: Reloj 2, 2: Mural
+            const SLIDE_DURATIONS = [7000, 8000, 15000]; 
+            let currentSlide = 0; 
             let elapsedInSlide = 0;
             let isHovered = false;
 
@@ -327,6 +313,18 @@
                     slide1.className = "slide slide-active flex flex-col items-center justify-center text-center w-full h-full px-4";
                     slide2.className = "slide slide-hidden-right slide-2-green flex flex-col items-center justify-center text-center w-full h-full px-4";
                     slide3.className = "slide slide-hidden-right slide-3-mural flex flex-col items-center justify-center w-full h-full p-0";
+                    
+                    // RECARGA DEL MURAL: 
+                    // Cuando volvemos al slide 1, el mural queda oculto. Aprovechamos este momento 
+                    // para forzar una recarga agregando un timestamp al final de la URL para evitar el caché.
+                    setTimeout(() => {
+                        const iframe = document.getElementById('mural-iframe');
+                        if (iframe) {
+                            const baseUrl = iframe.src.split('?')[0]; // limpiamos parámetros anteriores si los hay
+                            iframe.src = baseUrl + '?t=' + new Date().getTime();
+                        }
+                    }, 800); // 800ms de delay para asegurar que la animación de ocultar el mural ya terminó
+
                 } else if (currentSlide === 1) {
                     captureZone.classList.add('clock-2-active');
                     slide1.className = "slide slide-hidden-left flex flex-col items-center justify-center text-center w-full h-full px-4";
@@ -347,8 +345,7 @@
             setInterval(() => {
                 if (!isHovered) {
                     elapsedInSlide += TICK_INTERVAL;
-
-                    if (elapsedInSlide >= SLIDE_DURATION) {
+                    if (elapsedInSlide >= SLIDE_DURATIONS[currentSlide]){
                         let nextSlide = currentSlide + 1;
                         if (nextSlide > 2) nextSlide = 0;
                         goToSlide(nextSlide);
