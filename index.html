@@ -16,12 +16,13 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+    <!-- html2canvas para capturas de alta definición -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap');
         body { font-family: 'Inter', sans-serif; transition: background-color 0.3s; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
         
         @keyframes pulse-border {
             0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
@@ -32,7 +33,6 @@
         
         #capture-zone {
             overflow: hidden;
-            -webkit-mask-image: -webkit-radial-gradient(white, black); 
         }
 
         .widget-hidden { display: none !important; }
@@ -63,15 +63,45 @@
             animation: none;
         }
 
-        /* Estilo para captura optimizada de Historias IG */
-        .story-format {
-            width: 360px !important;
-            height: 640px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            align-items: center !important;
-            padding: 20px !important;
+        /* TRANSICIÓN LIMPIA DE DIAPOSITIVAS */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 600ms ease, transform 600ms ease;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(0.97);
+        }
+        .slide-active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            z-index: 10;
+            transform: scale(1);
+        }
+
+        .slide-2-green {
+            background: #1f4d3a !important;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #capture-zone.clock-2-active {
+            background: #1f4d3a !important;
+        }
+
+        #capture-zone.clock-2-active .bg-slate-800 {
+            background-color: #173b2d !important;
+        }
+
+        .slide-2-green .clock-number-2 {
+            color: #67d9ff !important;
         }
     </style>
 </head>
@@ -111,40 +141,120 @@
             </p>
         </header>
 
-        <div id="capture-zone" class="bg-slate-900 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden counter-box mb-8 border border-slate-700">
-            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-blue-600 opacity-20 blur-3xl"></div>
-            <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-blue-600 opacity-20 blur-3xl"></div>
-            
-            <div class="relative z-10 text-center">
-                <p class="text-blue-300 font-semibold mb-2 uppercase tracking-widest text-sm">Contador del incumplimiento</p>
-                <h2 class="text-2xl md:text-3xl font-bold text-white mb-8">La Ley de Financiamiento Universitario lleva sancionada</h2>
+        <!-- CAPTURE ZONE (CON RELOJ DOBLE Y NÚMEROS EN CAJAS AISLADAS) -->
+        <div id="capture-zone" class="bg-slate-900 rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden counter-box mb-8 border border-slate-700 transition-all duration-300">
+            <!-- luces sutiles de fondo -->
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-blue-600/20 blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-blue-600/20 blur-3xl pointer-events-none"></div>
+
+            <!-- Slides Overlay Container -->
+            <div class="relative z-10 min-h-[340px] md:min-h-[320px] flex items-center justify-center overflow-hidden">
                 
-                <div class="flex flex-wrap justify-center gap-4 md:gap-8">
-                    <div class="flex flex-col items-center">
-                        <div class="bg-slate-800 text-blue-400 font-mono text-5xl md:text-7xl font-bold px-4 py-3 md:px-6 md:py-4 rounded-xl shadow-inner min-w-[100px] md:min-w-[140px]" id="dias">00</div>
-                        <span class="text-slate-400 mt-2 text-sm md:text-base font-semibold uppercase">Días</span>
+                <!-- Slide 1: Contador del Incumplimiento -->
+                <div id="slide-1" class="slide slide-active flex flex-col items-center justify-center text-center w-full">
+                    <div>
+                        <p class="text-blue-300 font-semibold mb-2 uppercase tracking-widest text-sm">Contador del incumplimiento</p>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">La Ley de Financiamiento Universitario lleva sancionada</h2>
                     </div>
-                    <div class="flex flex-col items-center">
-                        <div class="bg-slate-800 text-white font-mono text-5xl md:text-7xl font-bold px-4 py-3 md:px-6 md:py-4 rounded-xl shadow-inner min-w-[100px] md:min-w-[140px]" id="horas">00</div>
-                        <span class="text-slate-400 mt-2 text-sm md:text-base font-semibold uppercase">Horas</span>
+
+                    <!-- Cards Row -->
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-4 my-2">
+                        <div class="flex flex-col items-center">
+                            <div class="flex items-center justify-center bg-slate-800 text-blue-400 font-mono text-4xl md:text-6xl font-bold px-3 md:px-5 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] h-[70px] md:h-[90px]">
+                                <span id="dias-1" class="number-val leading-none">00</span>
+                            </div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Días</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="flex items-center justify-center bg-slate-800 text-white font-mono text-4xl md:text-6xl font-bold px-3 md:px-5 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] h-[70px] md:h-[90px]">
+                                <span id="horas-1" class="number-val leading-none">00</span>
+                            </div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Horas</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="flex items-center justify-center bg-slate-800 text-white font-mono text-4xl md:text-6xl font-bold px-3 md:px-5 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] h-[70px] md:h-[90px]">
+                                <span id="minutos-1" class="number-val leading-none">00</span>
+                            </div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Minutos</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="flex items-center justify-center bg-slate-800 text-blue-400 font-mono text-4xl md:text-6xl font-bold px-3 md:px-5 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] h-[70px] md:h-[90px]">
+                                <span id="segundos-1" class="number-val leading-none">00</span>
+                            </div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Segundos</span>
+                        </div>
                     </div>
-                    <div class="flex flex-col items-center">
-                        <div class="bg-slate-800 text-white font-mono text-5xl md:text-7xl font-bold px-4 py-3 md:px-6 md:py-4 rounded-xl shadow-inner min-w-[100px] md:min-w-[140px]" id="minutos">00</div>
-                        <span class="text-slate-400 mt-2 text-sm md:text-base font-semibold uppercase">Minutos</span>
+
+                    <!-- Footer Text -->
+                    <div class="mt-4 text-slate-300 text-sm md:text-base">
+                        <p>La Universidad Pública no puede esperar más. 🇦🇷</p>
+                        <p class="font-mono mt-1 opacity-50 text-xs" id="timestamp"></p>
                     </div>
                 </div>
-                
-                <div class="mt-8 text-slate-300 text-sm md:text-base">
-                    <p>La Universidad Pública no puede esperar más. 🇦🇷</p>
-                    <p class="font-mono mt-2 opacity-50 text-xs" id="timestamp"></p>
+
+                <!-- Slide 2: Próxima Convocatoria -->
+                <div id="slide-2" class="slide slide-2-green flex flex-col items-center justify-center text-center w-full">
+                    <div>
+                        <p class="text-amber-300 font-semibold mb-2 uppercase tracking-widest text-sm">Jueves 15 de Octubre de 2026 — 13:00 hs</p>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white mb-1">5ta Marcha Universitaria</h2>
+                        <p class="text-slate-300 text-xs md:text-sm font-medium mb-3">¡Marchamos todos/as!</p>
+                    </div>
+
+                    <!-- Cards Row -->
+                    <div class="flex flex-wrap justify-center gap-2 md:gap-4 my-2" id="countdown-cards">
+                        <div class="flex flex-col items-center">
+                            <div class="flex items-center justify-center bg-slate-800 text-sky-300 font-mono text-4xl md:text-6xl font-bold px-3 md:px-5 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] h-[70px] md:h-[90px] clock-number-2">
+                                <span id="dias-2" class="number-val leading-none">00</span>
+                            </div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Días</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="flex items-center justify-center bg-slate-800 text-white font-mono text-4xl md:text-6xl font-bold px-3 md:px-5 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] h-[70px] md:h-[90px] clock-number-2">
+                                <span id="horas-2" class="number-val leading-none">00</span>
+                            </div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Horas</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="flex items-center justify-center bg-slate-800 text-white font-mono text-4xl md:text-6xl font-bold px-3 md:px-5 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] h-[70px] md:h-[90px] clock-number-2">
+                                <span id="minutos-2" class="number-val leading-none">00</span>
+                            </div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Minutos</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="flex items-center justify-center bg-slate-800 text-sky-300 font-mono text-4xl md:text-6xl font-bold px-3 md:px-5 rounded-xl shadow-inner min-w-[80px] md:min-w-[120px] h-[70px] md:h-[90px] clock-number-2">
+                                <span id="segundos-2" class="number-val leading-none">00</span>
+                            </div>
+                            <span class="text-slate-400 mt-2 text-xs md:text-sm font-semibold uppercase">Segundos</span>
+                        </div>
+                    </div>
+
+                    <div id="marcha-today-msg" class="hidden my-4 p-3 rounded-xl bg-sky-500/20 border border-amber-500/40 text-amber-300 font-bold text-lg md:text-xl animate-pulse">
+                        ¡Es hoy! Convocatoria activa a la 5ta Marcha Universitaria. 🇦🇷
+                    </div>
+
+                    <!-- Footer Text -->
+                    <div class="mt-4 text-slate-300 text-sm md:text-base">
+                        <p>En defensa de la Educación Pública Argentina. 🇦🇷</p>
+                        <p class="font-mono mt-1 opacity-50 text-xs" id="timestamp-2"></p>
+                    </div>
                 </div>
+
             </div>
         </div>
 
-        <div id="actions-area" class="flex flex-col sm:flex-row justify-center gap-4 mb-16">
-            <button onclick="openShareModal()" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 w-full sm:w-auto text-lg">
-                <i data-lucide="share-2"></i>
+        <!-- ACCIONES -->
+        <div id="actions-area" class="flex flex-wrap justify-center items-center gap-3 mb-16">
+            <button onclick="openShareModal()" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-7 rounded-full shadow-lg transition-all transform hover:scale-105 text-base md:text-lg">
+                <i data-lucide="share-2" class="w-5 h-5"></i>
                 Compartir Contador
+            </button>
+            <button onclick="shareWhatsApp()" class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-full shadow-lg transition-all transform hover:scale-105 text-base md:text-lg">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                WhatsApp
+            </button>
+            <button onclick="copyLink()" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 px-6 rounded-full shadow-lg transition-all transform hover:scale-105 text-base md:text-lg">
+                <i data-lucide="link" class="w-5 h-5"></i>
+                Copiar Link
             </button>
         </div>
 
@@ -245,7 +355,7 @@
         </section>
     </main>
 
-    <!-- MODAL RESPONSIVE DE COMPARTIR -->
+    <!-- MODAL DE COMPARTIR -->
     <div id="share-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity">
         <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
             
@@ -254,64 +364,78 @@
                     <i data-lucide="share-2" class="text-blue-600"></i>
                     <h3 class="font-bold text-lg text-slate-800">Compartir Contador</h3>
                 </div>
-                <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg transition-colors">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
 
             <div class="p-6 overflow-y-auto space-y-6">
-                <!-- Opción 1: Captura Stories -->
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col gap-3">
-                    <div class="flex items-center gap-3">
-                        <div class="p-2 bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white rounded-xl">
-                            <i data-lucide="instagram" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-sm">Historia de Instagram (Captura)</h4>
-                            <p class="text-xs text-slate-500">Genera la imagen adaptada verticalmente para subir a Stories.</p>
-                        </div>
+                <!-- REDES SOCIALES -->
+                <div>
+                    <h4 class="font-bold text-slate-800 text-sm mb-3">1. Difundir en Redes Sociales</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="shareWhatsApp()" class="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl transition-all text-xs sm:text-sm">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+                        </button>
+                        <button onclick="shareTwitter()" class="flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white font-bold py-2.5 px-3 rounded-xl transition-all text-xs sm:text-sm">
+                            <i data-lucide="twitter" class="w-4 h-4"></i> X (Twitter)
+                        </button>
+                        <button onclick="shareFacebook()" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-3 rounded-xl transition-all text-xs sm:text-sm">
+                            <i data-lucide="facebook" class="w-4 h-4"></i> Facebook
+                        </button>
+                        <button onclick="copyLink()" class="flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-800 text-white font-bold py-2.5 px-3 rounded-xl transition-all text-xs sm:text-sm">
+                            <i data-lucide="link" class="w-4 h-4"></i> Copiar Link
+                        </button>
                     </div>
-                    <button onclick="shareCounter('story')" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="camera" class="w-4 h-4"></i> Generar Captura para IG
-                    </button>
                 </div>
 
-                <!-- Opción 2: Captura Simple -->
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col gap-3">
-                    <div class="flex items-center gap-3">
-                        <div class="p-2 bg-blue-600 text-white rounded-xl">
-                            <i data-lucide="image" class="w-5 h-5"></i>
+                <!-- CAPTURAS HD -->
+                <div class="space-y-3 pt-2 border-t border-slate-100">
+                    <h4 class="font-bold text-slate-800 text-sm">2. Descargar Imagen en HD</h4>
+                    
+                    <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white rounded-xl shrink-0">
+                                <i data-lucide="instagram" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800 text-xs sm:text-sm">Historia (Vertical 9:16)</h5>
+                                <p class="text-[11px] text-slate-500">Ideal para Instagram Stories / TikTok</p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-sm">Captura Normal</h4>
-                            <p class="text-xs text-slate-500">Descarga o comparte la imagen del contador estándar.</p>
-                        </div>
+                        <button onclick="shareCounter('story')" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2 px-3 rounded-xl transition-all flex items-center gap-1.5 shrink-0">
+                            <i data-lucide="camera" class="w-3.5 h-3.5"></i> Capturar
+                        </button>
                     </div>
-                    <button onclick="shareCounter('standard')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="download" class="w-4 h-4"></i> Generar Captura Web
-                    </button>
+
+                    <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-blue-600 text-white rounded-xl shrink-0">
+                                <i data-lucide="download" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800 text-xs sm:text-sm">Captura Estándar</h5>
+                                <p class="text-[11px] text-slate-500">Para publicar en Feed o estados</p>
+                            </div>
+                        </div>
+                        <button onclick="shareCounter('standard')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-3 rounded-xl transition-all flex items-center gap-1.5 shrink-0">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i> Descargar
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Opción 3: Embeber iFrame -->
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col gap-3">
-                    <div class="flex items-center gap-3">
-                        <div class="p-2 bg-slate-800 text-white rounded-xl">
-                            <i data-lucide="code" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-sm">Incrustar en Sitio Web (iFrame)</h4>
-                            <p class="text-xs text-slate-500">Copia el código para incluir el reloj en un campus, moodle o web.</p>
-                        </div>
-                    </div>
+                <!-- CÓDIGO EMBEBIDO -->
+                <div class="pt-2 border-t border-slate-100">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2">3. Incrustar en Sitio Web (iFrame)</h4>
                     <div class="relative">
-                        <textarea id="iframe-code" readonly class="w-full h-20 p-2 text-xs font-mono bg-white border border-slate-300 rounded-lg text-slate-600 resize-none focus:outline-none">&lt;iframe src="https://sudhurok.github.io/reloj-ley-universitaria/reloj-contador.html" width="100%" height="300" frameborder="0" scrolling="no" style="border:none; overflow:hidden;"&gt;&lt;/iframe&gt;</textarea>
-                        <button onclick="copyIframeCode()" class="absolute bottom-3 right-3 bg-slate-800 hover:bg-slate-700 text-white text-xs px-3 py-1.5 rounded-md font-semibold transition-all flex items-center gap-1">
+                        <textarea id="iframe-code" readonly class="w-full h-16 p-2 text-xs font-mono bg-slate-50 border border-slate-200 rounded-lg text-slate-600 resize-none focus:outline-none">&lt;iframe src="https://sudhurok.github.io/reloj-ley-universitaria/" width="100%" height="400" frameborder="0" scrolling="no" style="border:none; overflow:hidden;"&gt;&lt;/iframe&gt;</textarea>
+                        <button onclick="copyIframeCode()" class="absolute bottom-2 right-2 bg-slate-800 hover:bg-slate-700 text-white text-xs px-2.5 py-1 rounded-md font-semibold transition-all flex items-center gap-1">
                             <i data-lucide="copy" class="w-3 h-3"></i> Copiar Código
                         </button>
                     </div>
                 </div>
 
-                <div id="modal-status" class="hidden text-center text-sm font-semibold text-blue-600"></div>
+                <div id="modal-status" class="hidden text-center text-xs font-bold text-blue-600 bg-blue-50 py-2 rounded-lg"></div>
             </div>
         </div>
     </div>
@@ -324,55 +448,137 @@
     <script>
         lucide.createIcons();
 
-        // Fecha de inicio: 21 de Octubre 2025
-        const startDate = new Date('2025-10-21T00:00:00-03:00');
+        const SITE_URL = "https://sudhurok.github.io/reloj-ley-universitaria/";
+        const startDate1 = new Date('2025-10-21T00:00:00-03:00');
+        const targetDate2 = new Date('2026-10-15T13:00:00-03:00');
 
-        function updateCounter() {
+        const SLIDE_DURATION = 7000;
+        let currentSlide = 0;
+        let elapsedInSlide = 0;
+        let isHovered = false;
+
+        const slide1 = document.getElementById('slide-1');
+        const slide2 = document.getElementById('slide-2');
+        const captureZone = document.getElementById('capture-zone');
+        const alertContainer = document.getElementById('alert-container');
+
+        function updateClocks() {
             const now = new Date();
-            const difference = now - startDate;
-            if (difference < 0) return;
-
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((difference / 1000 / 60) % 60);
-            
-            const diasElement = document.getElementById('dias');
-            const alertContainer = document.getElementById('alert-container');
             const isWidget = document.body.classList.contains('is-widget');
+
+            const day = now.getDate();
+            const month = now.getMonth() + 1;
+            const year = now.getFullYear();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const formattedTime = `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+
+            // --- RELOJ 1: INCUMPLIMIENTO ---
+            const diff1 = now - startDate1;
+            if (diff1 >= 0) {
+                const days1 = Math.floor(diff1 / (1000 * 60 * 60 * 24));
+                const hours1 = Math.floor((diff1 / (1000 * 60 * 60)) % 24);
+                const minutes1 = Math.floor((diff1 / (1000 * 60)) % 60);
+                const seconds1 = Math.floor((diff1 / 1000) % 60);
+
+                const diasElement1 = document.getElementById('dias-1');
+                diasElement1.innerText = days1.toString().padStart(2, '0');
+                document.getElementById('horas-1').innerText = hours1.toString().padStart(2, '0');
+                document.getElementById('minutos-1').innerText = minutes1.toString().padStart(2, '0');
+                document.getElementById('segundos-1').innerText = seconds1.toString().padStart(2, '0');
+
+                const mesesTranscurridos = Math.floor(days1 / 30.44);
+                if (days1 >= 200 && !isWidget) {
+                    diasElement1.classList.remove('text-blue-400');
+                    diasElement1.classList.add('text-red-500', 'animate-pulse'); 
+
+                    if (alertContainer && alertContainer.innerHTML === "") {
+                        alertContainer.innerHTML = `
+                            <div class="bg-red-600 text-white text-center py-3 px-4 font-black uppercase tracking-tighter animate-pulse z-[60] relative border-b-2 border-red-800">
+                                <i data-lucide="alert-octagon" class="inline-block mr-2 w-5 h-5 align-middle"></i>
+                                ¡URGENTE: YA SON ${mesesTranscurridos} MESES DE INCUMPLIMIENTO DE LA LEY DE FINANCIAMIENTO!
+                            </div>
+                        `;
+                        lucide.createIcons();
+                    }
+                } else {
+                    if (days1 >= 200 && isWidget) {
+                        diasElement1.classList.remove('text-blue-400');
+                        diasElement1.classList.add('text-red-500', 'animate-pulse');
+                    } else {
+                        diasElement1.classList.remove('text-red-500', 'animate-pulse');
+                        diasElement1.classList.add('text-blue-400');
+                    }
+                    if (alertContainer) alertContainer.innerHTML = "";
+                }
+            }
             
-            diasElement.innerText = days.toString().padStart(2, '0');
-            document.getElementById('horas').innerText = hours.toString().padStart(2, '0');
-            document.getElementById('minutos').innerText = minutes.toString().padStart(2, '0');
-            document.getElementById('timestamp').innerText = "Actualizado al: " + now.toLocaleString();
+            document.getElementById('timestamp').innerText = "Actualizado al: " + formattedTime;
+            document.getElementById('timestamp-2').innerText = "Actualizado al: " + formattedTime;
 
-            const mesesTranscurridos = Math.floor(days / 30.44);
+            // --- RELOJ 2: MARCHA UNIVERSITARIA ---
+            const diff2 = targetDate2 - now;
+            const countdownCards = document.getElementById('countdown-cards');
+            const marchaMsg = document.getElementById('marcha-today-msg');
 
-            if (days >= 200 && !isWidget) {
-                diasElement.classList.remove('text-blue-400');
-                diasElement.classList.add('text-red-500', 'animate-pulse'); 
-
-                if (alertContainer && alertContainer.innerHTML === "") {
-                    alertContainer.innerHTML = `
-                        <div class="bg-red-600 text-white text-center py-3 px-4 font-black uppercase tracking-tighter animate-pulse z-[60] relative border-b-2 border-red-800">
-                            <i data-lucide="alert-octagon" class="inline-block mr-2 w-5 h-5 align-middle"></i>
-                            ¡URGENTE: YA SON ${mesesTranscurridos} MESES DE INCUMPLIMIENTO DE LA LEY DE FINANCIAMIENTO!
-                        </div>
-                    `;
-                    lucide.createIcons();
+            if (diff2 <= 0) {
+                captureZone.classList.remove('clock-2-active');
+                slide2.classList.add('hidden');
+                if (currentSlide === 1) {
+                    goToSlide(0);
                 }
             } else {
-                if (days >= 200 && isWidget) {
-                    diasElement.classList.remove('text-blue-400');
-                    diasElement.classList.add('text-red-500', 'animate-pulse');
-                } else {
-                    diasElement.classList.remove('text-red-500', 'animate-pulse');
-                    diasElement.classList.add('text-blue-400');
-                }
-                if (alertContainer) alertContainer.innerHTML = "";
+                const days2 = Math.floor(diff2 / (1000 * 60 * 60 * 24));
+                const hours2 = Math.floor((diff2 / (1000 * 60 * 60)) % 24);
+                const minutes2 = Math.floor((diff2 / (1000 * 60)) % 60);
+                const seconds2 = Math.floor((diff2 / 1000) % 60);
+
+                document.getElementById('dias-2').innerText = days2.toString().padStart(2, '0');
+                document.getElementById('horas-2').innerText = hours2.toString().padStart(2, '0');
+                document.getElementById('minutos-2').innerText = minutes2.toString().padStart(2, '0');
+                document.getElementById('segundos-2').innerText = seconds2.toString().padStart(2, '0');
+
+                countdownCards.classList.remove('hidden');
+                marchaMsg.classList.add('hidden');
             }
         }
-        setInterval(updateCounter, 1000);
-        updateCounter();
+
+        updateClocks();
+        setInterval(updateClocks, 1000);
+
+        function goToSlide(index) {
+            currentSlide = index;
+            elapsedInSlide = 0;
+
+            if (currentSlide === 0) {
+                captureZone.classList.remove('clock-2-active');
+                slide1.classList.add('slide-active');
+                slide2.classList.remove('slide-active');
+            } else {
+                captureZone.classList.add('clock-2-active');
+                slide2.classList.add('slide-active');
+                slide1.classList.remove('slide-active');
+            }
+        }
+
+        captureZone.addEventListener('mouseenter', () => { isHovered = true; });
+        captureZone.addEventListener('mouseleave', () => { isHovered = false; });
+
+        const TICK_INTERVAL = 100;
+        setInterval(() => {
+            if (!isHovered) {
+                elapsedInSlide += TICK_INTERVAL;
+
+                if (elapsedInSlide >= SLIDE_DURATION) {
+                    if (currentSlide === 0 && new Date() < targetDate2) {
+                        goToSlide(1);
+                    } else if (currentSlide === 1) {
+                        goToSlide(0);
+                    }
+                }
+            }
+        }, TICK_INTERVAL);
 
         function checkWidgetMode() {
             const params = new URLSearchParams(window.location.search);
@@ -388,7 +594,7 @@
         }
         checkWidgetMode();
 
-        // Funciones Modal
+        // --- COMPARTIR Y REDES ---
         function openShareModal() {
             document.getElementById('share-modal').classList.remove('hidden');
         }
@@ -397,67 +603,134 @@
             document.getElementById('share-modal').classList.add('hidden');
         }
 
+        function copyLink() {
+            navigator.clipboard.writeText(SITE_URL);
+            showStatus("¡Enlace copiado al portapapeles!");
+        }
+
+        function shareWhatsApp() {
+            const text = encodeURIComponent("⏰ *Reloj del Desfinanciamiento Universitario*\nEl Gobierno sigue sin cumplir la Ley de Financiamiento. Seguí el contador en vivo:\n" + SITE_URL);
+            window.open("https://api.whatsapp.com/send?text=" + text, "_blank");
+        }
+
+        function shareTwitter() {
+            const text = encodeURIComponent("El Gobierno sigue sin cumplir la Ley de Financiamiento Universitario. Seguí el contador en vivo de @SUDHUR #UniversidadPública");
+            window.open("https://twitter.com/intent/tweet?text=" + text + "&url=" + encodeURIComponent(SITE_URL), "_blank");
+        }
+
+        function shareFacebook() {
+            window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(SITE_URL), "_blank");
+        }
+
         function copyIframeCode() {
             const copyText = document.getElementById("iframe-code");
             copyText.select();
             copyText.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(copyText.value);
-            
-            const status = document.getElementById('modal-status');
-            status.innerText = "¡Código de iframe copiado!";
-            status.classList.remove('hidden');
-            setTimeout(() => status.classList.add('hidden'), 2500);
+            showStatus("¡Código iFrame copiado!");
         }
 
+        function showStatus(msg) {
+            const status = document.getElementById('modal-status');
+            status.innerText = msg;
+            status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 3000);
+        }
+
+        // --- CAPTURA DE PANTALLA CON CORRECCIÓN DE ALINEACIÓN VERTICAL DE NÚMEROS ---
         async function shareCounter(mode) {
             const node = document.getElementById('capture-zone');
-            const statusText = document.getElementById('modal-status');
 
             try {
-                statusText.innerText = "Generando imagen...";
-                statusText.classList.remove('hidden');
+                showStatus("Procesando imagen HD...");
+                isHovered = true;
 
-                if (mode === 'story') {
-                    node.classList.add('story-format');
+                if (document.fonts) {
+                    await document.fonts.ready;
                 }
+                
+                const activeIndex = currentSlide;
 
-                const width = node.offsetWidth;
-                const height = node.offsetHeight;
+                const canvas = await html2canvas(node, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: activeIndex === 1 ? '#1f4d3a' : '#0f172a',
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        const clonedNode = clonedDoc.getElementById('capture-zone');
+                        
+                        // Ocultar luces traseras con blur que ensucian el render
+                        clonedNode.querySelectorAll('.blur-3xl').forEach(el => el.style.display = 'none');
 
-                const dataUrl = await domtoimage.toPng(node, {
-                    width: width,   
-                    height: height, 
-                    style: { 'margin': '0', 'transform': 'scale(1)', 'left': '0', 'top': '0' }
+                        // Ajuste fino para corregir la falla de baseline de html2canvas
+                        clonedNode.querySelectorAll('.number-val').forEach(el => {
+                            el.style.display = 'inline-block';
+                            el.style.lineHeight = '1';
+                            el.style.transform = 'translateY(-46.5%)'; // Desplaza los números hacia el centro exacto
+                            el.style.padding = '0';
+                            el.style.margin = '0';
+                        });
+
+                        // Aislar únicamente la diapositiva que está activa en pantalla
+                        const s1 = clonedDoc.getElementById('slide-1');
+                        const s2 = clonedDoc.getElementById('slide-2');
+
+                        if (activeIndex === 0) {
+                            s2.style.display = 'none';
+                            s1.style.display = 'flex';
+                            s1.style.opacity = '1';
+                            s1.style.visibility = 'visible';
+                            s1.style.position = 'relative';
+                            s1.style.transform = 'none';
+                        } else {
+                            s1.style.display = 'none';
+                            s2.style.display = 'flex';
+                            s2.style.opacity = '1';
+                            s2.style.visibility = 'visible';
+                            s2.style.position = 'relative';
+                            s2.style.transform = 'none';
+                        }
+
+                        // Formatear proporciones para Instagram Story (vertical 9:16)
+                        if (mode === 'story') {
+                            clonedNode.style.width = '380px';
+                            clonedNode.style.height = '670px';
+                            clonedNode.style.display = 'flex';
+                            clonedNode.style.flexDirection = 'column';
+                            clonedNode.style.justifyContent = 'center';
+                            clonedNode.style.alignItems = 'center';
+                            clonedNode.style.padding = '24px';
+                            clonedNode.style.borderRadius = '28px';
+                        }
+                    }
                 });
 
-                if (mode === 'story') {
-                    node.classList.remove('story-format');
-                }
+                isHovered = false;
 
-                const response = await fetch(dataUrl);
-                const blob = await response.blob();
-                const file = new File([blob], "contador_sudhur.png", { type: "image/png" });
+                const dataUrl = canvas.toDataURL("image/png");
+                const blob = await (await fetch(dataUrl)).blob();
+                const file = new File([blob], mode === 'story' ? "contador_story_sudhur.png" : "contador_sudhur.png", { type: "image/png" });
 
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     await navigator.share({
-                        title: 'SUDHUR - Ley de Financiamiento',
+                        title: 'SUDHUR - Ley de Financiamiento Universitario',
                         text: 'El tiempo pasa y el Gobierno sigue sin cumplir la ley. #UniversidadPública',
                         files: [file]
                     });
+                    showStatus("¡Imagen enviada!");
                 } else {
                     const link = document.createElement('a');
                     link.download = mode === 'story' ? 'contador_story_sudhur.png' : 'contador_sudhur.png';
                     link.href = dataUrl;
                     link.click();
+                    showStatus("¡Imagen descargada exitosamente!");
                 }
             } catch (err) {
-                console.error('Error:', err);
-                statusText.innerText = "Error al generar imagen.";
+                console.error('Error al generar la imagen:', err);
+                showStatus("Error al generar la captura.");
             } finally {
-                if (mode === 'story') {
-                    node.classList.remove('story-format');
-                }
-                setTimeout(() => statusText.classList.add('hidden'), 2000);
+                isHovered = false;
             }
         }
     </script>
